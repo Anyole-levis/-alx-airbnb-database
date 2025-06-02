@@ -68,5 +68,6 @@
 * Property  →  Review (properties can have many reviews)
 * User  →  Message (users can send many messages)
 
-
+## My ER Diagram
+ ![ERD Diagram](ERD/ERD_Diagram.png)
 
