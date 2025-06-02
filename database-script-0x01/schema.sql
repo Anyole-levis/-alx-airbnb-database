@@ -1,52 +1,82 @@
+-- User Table
 CREATE TABLE User (
-user_id: Primary Key, UUID, Indexed
-first_name: VARCHAR, NOT NULL
-last_name: VARCHAR, NOT NULL
-email: VARCHAR, UNIQUE, NOT NULL
-password_hash: VARCHAR, NOT NULL
-phone_number: VARCHAR, NULL
-role: ENUM (guest, host, admin), NOT NULL
-created_at: TIMESTAMP, DEFAULT CURRENT_TIMESTAMP
-  )
-  
-Property
-property_id: Primary Key, UUID, Indexed
-host_id: Foreign Key, references User(user_id)
-name: VARCHAR, NOT NULL
-description: TEXT, NOT NULL
-location: VARCHAR, NOT NULL
-pricepernight: DECIMAL, NOT NULL
-created_at: TIMESTAMP, DEFAULT CURRENT_TIMESTAMP
-updated_at: TIMESTAMP, ON UPDATE CURRENT_TIMESTAMP
-  
-Booking
-booking_id: Primary Key, UUID, Indexed
-property_id: Foreign Key, references Property(property_id)
-user_id: Foreign Key, references User(user_id)
-start_date: DATE, NOT NULL
-end_date: DATE, NOT NULL
-total_price: DECIMAL, NOT NULL
-status: ENUM (pending, confirmed, canceled), NOT NULL
-created_at: TIMESTAMP, DEFAULT CURRENT_TIMESTAMP
-  
-Payment
-payment_id: Primary Key, UUID, Indexed
-booking_id: Foreign Key, references Booking(booking_id)
-amount: DECIMAL, NOT NULL
-payment_date: TIMESTAMP, DEFAULT CURRENT_TIMESTAMP
-payment_method: ENUM (credit_card, paypal, stripe), NOT NULL
-  
-Review
-review_id: Primary Key, UUID, Indexed
-property_id: Foreign Key, references Property(property_id)
-user_id: Foreign Key, references User(user_id)
-rating: INTEGER, CHECK: rating >= 1 AND rating <= 5, NOT NULL
-comment: TEXT, NOT NULL
-created_at: TIMESTAMP, DEFAULT CURRENT_TIMESTAMP
-  
-Message
-message_id: Primary Key, UUID, Indexed
-sender_id: Foreign Key, references User(user_id)
-recipient_id: Foreign Key, references User(user_id)
-message_body: TEXT, NOT NULL
-sent_at: TIMESTAMP, DEFAULT CURRENT_TIMESTAMP
+    user_id UUID PRIMARY KEY,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    phone_number VARCHAR(20),
+    role ENUM('guest', 'host', 'admin') NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_user_email (email)
+);
+
+-- Property Table
+CREATE TABLE Property (
+    property_id UUID PRIMARY KEY,
+    host_id UUID NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    location VARCHAR(255) NOT NULL,
+    pricepernight DECIMAL(10,2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (host_id) REFERENCES User(user_id) ON DELETE CASCADE,
+    INDEX idx_property_host (host_id),
+    INDEX idx_property_location (location)
+);
+
+-- Booking Table
+CREATE TABLE Booking (
+    booking_id UUID PRIMARY KEY,
+    property_id UUID NOT NULL,
+    user_id UUID NOT NULL,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    total_price DECIMAL(10,2) NOT NULL,
+    status ENUM('pending', 'confirmed', 'canceled') NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (property_id) REFERENCES Property(property_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE,
+    INDEX idx_booking_property (property_id),
+    INDEX idx_booking_user (user_id),
+    INDEX idx_booking_status (status)
+);
+
+-- Payment Table
+CREATE TABLE Payment (
+    payment_id UUID PRIMARY KEY,
+    booking_id UUID NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    payment_method ENUM('credit_card', 'paypal', 'stripe') NOT NULL,
+    FOREIGN KEY (booking_id) REFERENCES Booking(booking_id) ON DELETE CASCADE,
+    INDEX idx_payment_booking (booking_id)
+);
+
+-- Review Table
+CREATE TABLE Review (
+    review_id UUID PRIMARY KEY,
+    property_id UUID NOT NULL,
+    user_id UUID NOT NULL,
+    rating INT NOT NULL CHECK (rating >= 1 AND rating <= 5),
+    comment TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (property_id) REFERENCES Property(property_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE,
+    INDEX idx_review_property (property_id),
+    INDEX idx_review_user (user_id)
+);
+
+-- Message Table
+CREATE TABLE Message (
+    message_id UUID PRIMARY KEY,
+    sender_id UUID NOT NULL,
+    recipient_id UUID NOT NULL,
+    message_body TEXT NOT NULL,
+    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (sender_id) REFERENCES User(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (recipient_id) REFERENCES User(user_id) ON DELETE CASCADE,
+    INDEX idx_message_sender (sender_id),
+    INDEX idx_message_recipient (recipient_id)
+);
