@@ -57,3 +57,16 @@
 * recipient_id: Foreign Key, references User(user_id)
 * message_body: TEXT, NOT NULL
 * sent_at: TIMESTAMP, DEFAULT CURRENT_TIMESTAMP
+
+
+# Relationship
+* User  → (Property (one host can have many properties)
+* User  → Booking (one user can have many bookings as a guest)
+* Property →  Booking (one property can have many bookings)
+* Booking  →  Payment (each booking has one payment)
+* User  →  Review (users can leave many reviews)
+* Property  →  Review (properties can have many reviews)
+* User  →  Message (users can send many messages)
+
+
+
