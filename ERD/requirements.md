@@ -69,5 +69,5 @@
 * User  →  Message (users can send many messages)
 
 ## My ER Diagram
- ![ERD Diagram](ERD_Diagram.png)
+ ![ERD Diagram](./ERD_Diagram.png)
 
