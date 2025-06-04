@@ -22,6 +22,7 @@ SELECT Property.property_id,
   Review.comment,
 FROM  Property
 LEFT JOIN Review ON Property.property_id = Review.property_id
+ORDER BY Property.name;
 
 -- third query
 SELECT User.user_id, 
