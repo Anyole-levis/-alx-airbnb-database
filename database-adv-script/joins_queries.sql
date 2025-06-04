@@ -1,3 +1,4 @@
+-- first query
 SELECT Booking.booking_id, Booking.property_id,
   Booking.start_date,
   Booking.end_date, 
@@ -7,5 +8,21 @@ SELECT Booking.booking_id, Booking.property_id,
   User.email
 FROM Booking 
 INNER JOIN Booking ON User.user_id = Booking.userid 
+
+-- second query
+SELECT Property.property_id,
+  Property.name,
+  Property.description,
+  Property.location, 
+  Property.pricepernight, 
+  Review.property_id, 
+  Review.review_id, 
+  Review.userid, 
+  Review.rating, 
+  Review.comment,
+FROM  Property
+LEFT JOIN Review ON Property.property_id = Review.property_id
+
+-- third query
 
 
