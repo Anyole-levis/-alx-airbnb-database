@@ -12,5 +12,6 @@ FROM User
 WHERE user_id IN (
   SELECT user_id
   FROM Booking 
+  GROUP BY user_id
   HAVING COUNT(booking_id) > 3
 );
