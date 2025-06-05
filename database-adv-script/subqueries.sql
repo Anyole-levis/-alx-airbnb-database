@@ -7,3 +7,10 @@ WHERE property_id IN (
   HAVING AVG(rating) > 4
 );
   
+SELECT user_id, first_name, last_name
+FROM User
+WHERE user_id IN (
+  SELECT user_id
+  FROM Booking 
+  HAVING COUNT(booking_id) > 3
+);
