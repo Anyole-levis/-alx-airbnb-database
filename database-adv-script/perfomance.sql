@@ -1,3 +1,4 @@
+EXPLAIN 
 SELECT User.user_id,   Booking.booking_id,
   Booking.user_id,
   Booking.start_date,
@@ -19,3 +20,7 @@ SELECT User.user_id,   Booking.booking_id,
 FROM Booking
 JOIN USER ON Booking.user_id = User.user_id 
 JOIN Property ON Booking.property_id = Property.property_id
+
+EXPLAIN 
+
+
