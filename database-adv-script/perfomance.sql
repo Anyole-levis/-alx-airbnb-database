@@ -20,7 +20,8 @@ SELECT User.user_id,   Booking.booking_id,
 FROM Booking
 JOIN USER ON Booking.user_id = User.user_id 
 JOIN Property ON Booking.property_id = Property.property_id
-
-EXPLAIN 
+WHERE 
+  Booking.status = 'confirmed'
+  AND Property.location IN ('New York', 'Los Angeles');
 
 
